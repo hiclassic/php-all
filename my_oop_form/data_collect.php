@@ -29,3 +29,16 @@ class Student {
         file_put_contents(self::$file_path, $this->collect(), FILE_APPEND);
     }
 }
+
+// Function to read stored data
+function readStoredData() {
+    if (file_exists(Student::$file_path)) {
+        $data = file_get_contents(Student::$file_path);
+        return nl2br($data); // Convert new lines to HTML line breaks
+    } else {
+      return "No data found.";
+} 
+}
+
+
+  

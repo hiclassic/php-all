@@ -1,6 +1,6 @@
 <?php
 //step 2
-require_once("collect.php");
+require_once("data_collect.php");
 
 if(isset($_POST["btnSubmit"])){
     
@@ -30,7 +30,7 @@ if(isset($_POST["btnSubmit"])){
 </head>
 
 <body>    
-    <form method="post" action="index.php">
+    <form method="post" action="#">
         <div>
             ID:<br/>
             <input type="text" name="txtId" required />
@@ -54,6 +54,22 @@ if(isset($_POST["btnSubmit"])){
         <div>
             <input type="submit" name="btnSubmit" value="Submit" />
         </div>
-    </form>
+    </form> 
+
+     <?php
+        // Display stored data
+     if (file_exists("store.txt")) {
+         $data = file_get_contents("store.txt");
+         if ($data) {
+             echo "<h2>Stored Data:</h2>";
+             echo "<pre>" . htmlspecialchars($data) . "</pre>";
+         } else {
+             echo "<h2>No data stored yet.</h2>";
+         }
+     } else {
+         echo "<h2>Data file does not exist.</h2>";
+     }
+
+     ?>
 </body>
 </html> 

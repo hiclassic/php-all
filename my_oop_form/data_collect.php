@@ -1,53 +1,38 @@
 <?php
 
-//step 1
-
-// Collecting data from the form of index.php using  oop class inheritance
 class Student {
     private $id;
     private $name;
+    private $pass;
+    private $email;
     private $course;
     private $phone;
- 
-    private static $file_path = "store.txt"; // File path to store student data
 
-    // Constructor
-    function  __construct($_id, $_name, $_course, $_phone) {
-        $this->id = $_id;
-        $this->name = $_name;
-        $this->course = $_course;
-        $this->phone = $_phone;
+    private static $file_path = "store.txt";
+
+    public function __construct($id, $name, $pass, $email, $course, $phone) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->pass = $pass;
+        $this->email = $email;
+        $this->course = $course;
+        $this->phone = $phone;
     }
 
-    // Convert to CSV format
-    public function collect() {
-        return $this->id . "\n" . $this->name . "\n" . $this->course . "\n" . $this->phone . PHP_EOL;  // End Of Line
+    public function save() {
+        $data = $this->id . "," . $this->name . "," . $this->pass . "," . $this->email . "," . $this->course . "," . $this->phone . PHP_EOL;
+        file_put_contents(self::$file_path, $data, FILE_APPEND);
     }
 
-    // Save to file
-    public function store() {
-        file_put_contents(self::$file_path, $this->collect(), FILE_APPEND);
+    public static function displayStudents() {
+        if (file_exists(self::$file_path)) {
+            $data = file_get_contents(self::$file_path);
+            echo "<h3>📋 Stored Students:</h3>";
+            echo "<pre>" . htmlspecialchars($data) . "</pre>";
+        } else {
+            echo "<p>No student data found.</p>";
+        }
     }
 }
 
-
-//display_students function
-
-public static function display_students(){
-        $students=file(self::$file_path);
-        echo "<b>ID | Name | COURSE | PHONE</b><br/>";
-        foreach($students as $student){
-       list($id,$name,$course,$phone)=explode(",",trim($student));
-       echo "$id | $name | $course | $phone<br/>";
-       
-        }
-    
-        
-}  
- 
 ?>
-
-
-
-
-  

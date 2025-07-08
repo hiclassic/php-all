@@ -12,7 +12,7 @@ class Student {
     private static $file_path = "store.txt"; // File path to store student data
 
     // Constructor
-    function __construct($_id, $_name, $_course, $_phone) {
+    function  __construct($_id, $_name, $_course, $_phone) {
         $this->id = $_id;
         $this->name = $_name;
         $this->course = $_course;
@@ -30,15 +30,24 @@ class Student {
     }
 }
 
-// Function to read stored data
-function readStoredData() {
-    if (file_exists(Student::$file_path)) {
-        $data = file_get_contents(Student::$file_path);
-        return nl2br($data); // Convert new lines to HTML line breaks
-    } else {
-      return "No data found.";
-} 
-}
+
+//display_students function
+
+public static function display_students(){
+        $students=file(self::$file_path);
+        echo "<b>ID | Name | COURSE | PHONE</b><br/>";
+        foreach($students as $student){
+       list($id,$name,$course,$phone)=explode(",",trim($student));
+       echo "$id | $name | $course | $phone<br/>";
+       
+        }
+    
+        
+}  
+ 
+?>
+
+
 
 
   

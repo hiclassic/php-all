@@ -55,21 +55,9 @@ if(isset($_POST["btnSubmit"])){
             <input type="submit" name="btnSubmit" value="Submit" />
         </div>
     </form> 
-
      <?php
-        // Display stored data
-     if (file_exists("store.txt")) {
-         $data = file_get_contents("store.txt");
-         if ($data) {
-             echo "<h2>Stored Data:</h2>";
-             echo "<pre>" . htmlspecialchars($data) . "</pre>";
-         } else {
-             echo "<h2>No data stored yet.</h2>";
-         }
-     } else {
-         echo "<h2>Data file does not exist.</h2>";
-     }
-
-     ?>
+     Student::display_students();
+      ?>
 </body>
 </html> 
+

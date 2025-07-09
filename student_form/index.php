@@ -33,16 +33,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <form method="POST" action="">
         <label>ID:</label><br>
-        <input type="text" name="id" required><br>
+        <input type="text" name="id" placeholder="Enter ID" required><br>
 
         <label>Name:</label><br>
-        <input type="text" name="name" required><br>
+        <input type="text" name="name" placeholder="Enter Name" required><br>
 
         <label>Email:</label><br>
-        <input type="email" name="email" required><br>
+        <input type="email" name="email" placeholder="Enter Email" required><br>
 
         <label>Password:</label><br>
-        <input type="password" name="password" required><br><br>
+        <input type="password" name="password" placeholder="Enter Password" required><br><br>
 
         <input type="submit" value="Submit">
     </form>

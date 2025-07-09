@@ -48,13 +48,13 @@ class Student {
     //         echo "<p>No student data found.</p>";
     //     }
     // }
-     static function displayStudents($filename) {
+     public static function displayStudents($filename) {
          $myarray=file($filename);
          echo "<b>ID | Name | email | PHONE</b><br/>";
          foreach($myarray as $student){
             list($id,$name,$email,$phone)=explode(",",trim($student));
             echo "$id | $name | $email | $phone<br/>";
-         }s
+         }
      }
 
 }

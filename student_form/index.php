@@ -1,4 +1,5 @@
-<?php session_start(); ?>
+<?php session_start();
+if(!isset($_SESSION["sname"])){header("location:login.php");}  ?>
 <?php
 require_once 'student_class.php';
 

@@ -39,16 +39,23 @@ class Student {
         file_put_contents($filename, $data, FILE_APPEND);
     }
 
-    public static function displayStudents($filename) {
-        if (file_exists($filename)) {
-            $data = file_get_contents($filename);
-            echo "<h3>📋 Stored Students:</h3>";
-            echo "<pre>" . htmlspecialchars($data) . "</pre>";
-        } else {
-            echo "<p>No student data found.</p>";
-        }
-    }
-     
+    // public static function displayStudents($filename) {
+    //     if (file_exists($filename)) {
+    //         $data = file_get_contents($filename);
+    //         echo "<h3>📋 Stored Students:</h3>";
+    //         echo "<pre>" . htmlspecialchars($data) . "</pre>";
+    //     } else {
+    //         echo "<p>No student data found.</p>";
+    //     }
+    // }
+     static function displayStudents($filename) {
+         $myarray=file($filename);
+         echo "<b>ID | Name | email | PHONE</b><br/>";
+         foreach($myarray as $student){
+            list($id,$name,$email,$phone)=explode(",",trim($student));
+            echo "$id | $name | $email | $phone<br/>";
+         }s
+     }
 
 }
 ?>

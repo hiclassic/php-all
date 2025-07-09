@@ -1,23 +1,39 @@
-<?php
+<!-- PHP md5(), sha1(), hash() Functions,base64_encode,base64_decode -->
 
-//some important encryption code policy in php
-//md5,sha1,sha256,sha512,bcrypt,ripemd160   
-//password_hash()   
-
-//https://www.codeigniter.com/userguide3/libraries/passwords.html
-//example wilth code:
-
-$m = password_hash("password", PASSWORD_DEFAULT);
+<?php 
+$password = "admin";
+//md5()
+$m = md5($password);
 echo $m;
 echo "<br>";
-echo password_verify("password", $m);
+echo strlen($m);
 
-//md5
-
-$m = md5("password");
+echo "<br>";
+//sha1(),
+$m = sha1($password);
 echo $m;
 echo "<br>";
-echo md5("password", $m);
+echo strlen($m);
 
+
+echo "<br>";
+//hash()
+$m = hash('sha1','this is admin');
+echo $m;
+echo "<br>";
+echo strlen($m);
+
+
+
+echo "<br>";
+//base64_encode(),
+$m = base64_encode($password);
+echo $m;
+echo "<br>";
+echo strlen($m);
+
+
+echo "<br>";
+ echo base64_decode("YWRtaW4=");
 
 ?>

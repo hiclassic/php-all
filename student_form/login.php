@@ -1,5 +1,6 @@
 <?php session_start();
-
+if(!isset($_SESSION["sname"])){header("location:login.php");}  ?>
+<?php
 if(isset($_POST["btnLogin"])){
     
     $username=$_POST["txtUsername"];
@@ -37,7 +38,7 @@ if(isset($_POST["btnLogin"])){
 <body>
 <?php echo isset($msg)?$msg:""; ?>
     
-    <form action="" method="post">
+    <form   action="" method="post">
         
         <table>
             <tr>

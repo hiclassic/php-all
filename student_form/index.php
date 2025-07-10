@@ -1,5 +1,5 @@
 <?php session_start();
-if(!isset($_SESSION["sname"])){header("location:login.php");}  ?>
+ ?>
 <?php
 require_once 'student_class.php';
 
@@ -10,8 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $student = new Student(
             $_POST['id'],
             $_POST['name'],
-            $_POST['email'],
-            $_POST['password']
+            $_POST['batch'],
         );
         $student->saveToFile("data.txt");
         $message = "Student data saved successfully.";
@@ -21,33 +20,108 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Form</title>
+    <title>Student Registration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 500px;
+            background: #fff;
+            margin: 50px auto;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px #aaa;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+
+        .message {
+            text-align: center;
+            padding: 10px;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+    </style>
 </head>
 <body>
+
+<div class="container">
     <h2>Student Registration Form</h2>
 
     <?php if ($message): ?>
-        <p><strong><?php echo $message; ?></strong></p>
+        <div class="message"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
 
     <form method="POST" action="">
-        <label>ID:</label><br>
-        <input type="text" name="id" placeholder="Enter ID" required><br>
+        <label>ID:</label>
+        <input type="text" name="id" placeholder="Enter ID" required>
 
-        <label>Name:</label><br>
-        <input type="text" name="name" placeholder="Enter Name" required><br>
+        <label>Name:</label>
+        <input type="text" name="name" placeholder="Enter Name" required>
 
-        <label>Email:</label><br>
-        <input type="email" name="email" placeholder="Enter Email" required><br>
-
-        <label>Password:</label><br>
-        <input type="password" name="password" placeholder="Enter Password" required><br><br>
+        <label>Batch:</label>
+        <input type="text" name="batch" placeholder="Enter Batch" required>
 
         <input type="submit" value="Submit">
     </form>
+</div>
+
+<div class="table-wrapper">
     <?php Student::displayStudents("data.txt"); ?>
+</div>
+
 </body>
 </html>

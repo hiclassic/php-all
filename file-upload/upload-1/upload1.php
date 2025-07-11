@@ -1,4 +1,4 @@
-<?php
+<<?php
 if (isset($_POST["btnsubmit"])){ 
   // print_r(myfile);
   $filename = $_FILES['myfile']['name'];
@@ -33,8 +33,8 @@ if (isset($_POST["btnsubmit"])){
 
 <?php
 
-	echo "<image src='$img.$filename' alt='jgdkagj' width='300px'>";
+	echo "<image src='/image.$filename' alt='jgdkagj' width='300px'>";
 
 ?>
 </body>
-</html>
+</html>>

@@ -1,0 +1,268 @@
+🟢 1️⃣ Student.php ব্যাখ্যা
+php
+Copy
+Edit
+<?php
+👉 PHP শুরু
+
+php
+Copy
+Edit
+class Student {
+✅ Student নামে একটা ক্লাস ডিফাইন করলাম — এখানে আমরা student এর data আর কাজগুলো এক জায়গায় রাখবো।
+
+Private properties
+php
+Copy
+Edit
+private $id;
+private $name;
+private $batch;
+✅ 3টা প্রাইভেট প্রপার্টি:
+
+$id = স্টুডেন্ট এর ID
+
+$name = নাম
+
+$batch = কোন ব্যাচ
+
+private মানে এগুলো বাহির থেকে সরাসরি access হবে না, safe থাকবে — শুধু class এর ভিতর থেকে সেট হবে।
+
+Constructor
+php
+Copy
+Edit
+public function __construct($id, $name, $batch) {
+    $this->setId($id);
+    $this->setName($name);
+    $this->setBatch($batch);
+}
+✅ __construct method:
+নতুন Student object বানালে, constructor এ ID, Name, Batch দিতে হবে।
+এইগুলো setter function দিয়ে ভেতরের প্রপার্টিতে সেট হয় — direct না, কারণ আমরা validation বা cleaning করতে চাই।
+
+Setters
+php
+Copy
+Edit
+private function setId($id) {
+    $this->id = trim($id);
+}
+✅ setId: ID থেকে ফাঁকা স্পেস (whitespace) কেটে ফেলে id property তে সেট করে।
+
+php
+Copy
+Edit
+private function setName($name) {
+    $this->name = htmlspecialchars(trim($name));
+}
+✅ setName:
+
+trim দিয়ে ফাঁকা স্পেস কেটে ফেলে।
+
+htmlspecialchars দিয়ে special character গুলো escape করে — যেন <script> বা অন্য কোনো XSS না চলে।
+
+php
+Copy
+Edit
+private function setBatch($batch) {
+    $this->batch = trim($batch);
+}
+✅ setBatch: ব্যাচ নাম থেকে ফাঁকা স্পেস কেটে সেট করে।
+
+Save method
+php
+Copy
+Edit
+public function saveToFile($filename) {
+    $data = "{$this->id},{$this->name},{$this->batch}\n";
+    file_put_contents($filename, $data, FILE_APPEND);
+}
+✅ saveToFile method:
+
+Student এর data comma-separated আকারে $data variable এ বানায়।
+
+file_put_contents দিয়ে .txt ফাইলে save করে।
+
+FILE_APPEND মানে নতুন লাইন আগের ডেটা ডিলিট না করে লাস্ট লাইনে যোগ হবে।
+
+Display method
+php
+Copy
+Edit
+public static function displayStudents($filename) {
+    if (!file_exists($filename)) {
+        echo "<p>No student data found.</p>";
+        return;
+    }
+✅ displayStudents method (static):
+
+static কারণ এটা ক্লাস থেকে সরাসরি কল করা যায় — new object বানানো লাগবে না।
+
+যদি file না থাকে → No student data found দেখাবে।
+
+php
+Copy
+Edit
+    $rows = file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+✅ file() function:
+
+.txt ফাইল থেকে সব লাইন array আকারে নেয়।
+
+FILE_IGNORE_NEW_LINES → প্রতিটি লাইনের শেষে \n remove করবে।
+
+FILE_SKIP_EMPTY_LINES → ফাঁকা লাইন skip করবে।
+
+php
+Copy
+Edit
+    echo <<<TABLE
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 60%;
+            margin: 20px auto;
+            font-family: Arial, sans-serif;
+        }
+        th, td {
+            border: 1px solid #999;
+            padding: 8px 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Batch</th>
+            </tr>
+        </thead>
+        <tbody>
+    TABLE;
+✅ Heredoc Syntax (<<<TABLE):
+
+বড় HTML ব্লক print করতে সহজ।
+
+এখানে <style> দিয়ে table এর CSS styling করা হয়েছে — সুন্দর, readable আর clean দেখতে।
+
+php
+Copy
+Edit
+    foreach ($rows as $student) {
+        list($id, $name, $batch) = explode(",", trim($student));
+        $id = htmlspecialchars($id);
+        $name = htmlspecialchars($name);
+        $batch = htmlspecialchars($batch);
+        echo "<tr><td>{$id}</td><td>{$name}</td><td>{$batch}</td></tr>";
+    }
+✅ Loop:
+
+প্রতিটি লাইন ধরে explode দিয়ে , চিহ্নে ভাগ → $id, $name, $batch আলাদা হয়।
+
+htmlspecialchars দিয়ে safe করা হয়।
+
+<tr><td>..</td></tr> দিয়ে টেবিল রো বানানো হয়।
+
+php
+Copy
+Edit
+    echo "</tbody></table>";
+}
+?>
+✅ টেবিলের </tbody> আর </table> ক্লোজ করে শেষ।
+
+🟢 2️⃣ index.php ব্যাখ্যা
+php
+Copy
+Edit
+<?php
+require_once 'Student.php';
+✅ Student.php কে include করছে — যাতে ক্লাস available থাকে।
+
+php
+Copy
+Edit
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id = $_POST['id'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $batch = $_POST['batch'] ?? '';
+
+    $student = new Student($id, $name, $batch);
+    $student->saveToFile('data.txt');
+
+    echo "<p>✅ Student Saved!</p>";
+}
+✅ Form submit হলে:
+
+$_POST থেকে id, name, batch নেয়।
+
+নতুন Student object বানায় → saveToFile দিয়ে data.txt তে save করে।
+
+Confirmation message দেখায়: ✅ Student Saved!
+
+html
+Copy
+Edit
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Register</title>
+</head>
+<body>
+✅ HTML Page শুরু — Title দেওয়া হলো।
+
+html
+Copy
+Edit
+<h2>Register New Student</h2>
+<form method="post">
+    ID: <input type="text" name="id" required><br><br>
+    Name: <input type="text" name="name" required><br><br>
+    Batch: <input type="text" name="batch" required><br><br>
+    <button type="submit">Save</button>
+</form>
+✅ Form:
+
+method="post" → POST request.
+
+৩টা input field — ID, Name, Batch।
+
+required → ফাঁকা দিলে submit হবে না।
+
+Submit হলে উপরের PHP block run হবে।
+
+html
+Copy
+Edit
+<hr>
+
+<h2>All Students</h2>
+<?php
+Student::displayStudents('data.txt');
+?>
+✅ displayStudents কল:
+
+data.txt থেকে সব student read করবে।
+
+styled table আকারে দেখাবে।
+
+html
+Copy
+Edit
+</body>
+</html>
+✅ HTML Page শেষ
+
+✅ এক কথায় সারমর্ম
+Student ক্লাস 👉 ডেটা save + display
+
+index.php 👉 form + save + show
+
+.txt 👉 simple flat file storage

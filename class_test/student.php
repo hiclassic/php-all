@@ -10,7 +10,7 @@ class Student {
         $this->setEmail($email);
     }
 
-    // ✅ id setter with regex validation
+    //  id setter with regex validation
     private function setId($id) {
         $id = trim($id);
         if (strlen($id) > 5) {
@@ -23,7 +23,7 @@ class Student {
         $this->name = htmlspecialchars(trim($name));
     }
 
-    // ✅ email setter with regex validation
+    //  email setter with regex validation
     private function setEmail($email) {
         $email = trim($email);
         // Simple regex: something@something.something
@@ -33,13 +33,13 @@ class Student {
         $this->email = htmlspecialchars($email);
     }
 
-    // ✅ Save data to file
+    //  Save data to file
     public function save($filename) {
         $line = "{$this->id},{$this->name},{$this->email}\n";
         file_put_contents($filename, $line, FILE_APPEND);
     }
 
-    // ✅ Display data nicely
+    //  Display data nicely
     public static function display($filename) {
         if (!file_exists($filename)) {
             echo "<p>No students found.</p>";

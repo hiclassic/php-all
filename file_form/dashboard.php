@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['myfile'])) {
             move_uploaded_file($tmp, 'uploads/' . $newName);
             file_put_contents('uploaded_files.txt', "{$student['email']},{$newName}\n", FILE_APPEND);
             $message = "✅ File uploaded!";
+
         }
     }
 }
@@ -52,6 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['myfile'])) {
             list($email, $file) = explode(",", $line);
             if ($email == $student['email']) {
                 echo "<li><a href='uploads/$file' target='_blank'>$file</a></li>";
+                echo " <img src='uploads/$file' width='100px'>";
             }
         }
         echo "</ul>";

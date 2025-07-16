@@ -1,5 +1,3 @@
-<?php session_start();
- ?>
 <?php
 require_once 'student_class.php';
 
@@ -11,116 +9,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_POST['id'],
             $_POST['name'],
             $_POST['batch'],
+            $_POST['email'],
+            $_POST['password']
         );
         $student->saveToFile("data.txt");
-        $message = "Student data saved successfully.";
+        $message = "Registration successful. Please login now.";
     } catch (Exception $e) {
         $message = "Error: " . $e->getMessage();
     }
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <head>
     <title>Student Registration</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f9f9;
-            margin: 0;
-            padding: 0;
+        body { font-family: Arial, sans-serif; background: #f2f2f2; }
+        .container { max-width: 500px; margin: 50px auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px #aaa; }
+        h2 { text-align: center; }
+        label { display: block; margin-top: 10px; }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%; padding: 10px; margin-top: 5px;
         }
-
-        .container {
-            max-width: 500px;
-            background: #fff;
-            margin: 50px auto;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px #aaa;
-        }
-
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
         input[type="submit"] {
-            width: 100%;
-            background: #007BFF;
-            color: #fff;
-            border: none;
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
+            background: #007BFF; color: #fff; padding: 12px; border: none; margin-top: 15px; width: 100%;
+            border-radius: 4px; cursor: pointer;
         }
-
-        input[type="submit"]:hover {
-            background: #0056b3;
-        }
-
-        .message {
-            text-align: center;
-            padding: 10px;
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-            border-radius: 4px;
-            margin-bottom: 20px;
-        }
-
-        .table-wrapper {
-            max-width: 800px;
-            margin: 30px auto;
-        }
+        input[type="submit"]:hover { background: #0056b3; }
+        .message { padding: 10px; background: #d1e7dd; border: 1px solid #badbcc; margin: 15px 0; border-radius: 5px; }
+        .link { text-align: center; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Student Registration Form</h2>
-
+    <h2>Student Registration</h2>
     <?php if ($message): ?>
         <div class="message"><?php echo htmlspecialchars($message); ?></div>
     <?php endif; ?>
-
-    <form method="POST" action="">
+    <form method="POST">
         <label>ID:</label>
-        <input type="text" name="id" placeholder="Enter ID" required>
-
+        <input type="text" name="id" required>
         <label>Name:</label>
-        <input type="text" name="name" placeholder="Enter Name" required>
-
+        <input type="text" name="name" required>
         <label>Batch:</label>
-        <input type="text" name="batch" placeholder="Enter Batch" required>
-
-        <input type="submit" value="Submit">
+        <input type="text" name="batch" required>
+        <label>Email:</label>
+        <input type="email" name="email" required>
+        <label>Password:</label>
+        <input type="password" name="password" required>
+        <input type="submit" value="Register">
     </form>
-</div>
 
-<div class="table-wrapper">
-    <?php Student::displayStudents("data.txt"); ?>
+    <div class="link">
+        Already have an account? <a href="login.php">Login here</a>
+    </div>
 </div>
 
 </body>

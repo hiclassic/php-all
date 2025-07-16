@@ -1,0 +1,332 @@
+✅ 🔍 1️⃣ User.php — Line by Line
+php
+Copy code
+<?php
+➡️ PHP শুরু। সব কোড PHP mode এ থাকবে।
+
+php
+Copy code
+class User {
+➡️ User নামে একটি parent/base class।
+➡️ এটাকে Inheritance এ parent class বলা হয়।
+
+php
+Copy code
+    protected $id;
+    protected $name;
+    protected $email;
+➡️ ৩টি property: id, name, email।
+➡️ protected মানে child class (Student) এগুলো access করতে পারবে।
+
+php
+Copy code
+    public function __construct($id, $name, $email) {
+➡️ Constructor method — যখন new object বানাবে তখন ইহা auto run হবে।
+➡️ $id, $name, $email প্যারামিটার নেবে।
+
+php
+Copy code
+        $this->setId($id);
+        $this->setName($name);
+        $this->setEmail($email);
+➡️ Constructor এর ভিতর setter method call করছে।
+➡️ মানগুলো setter function দিয়ে validate হবে।
+
+php
+Copy code
+    protected function setId($id) {
+➡️ setId method — protected, child class ও পাবে।
+➡️ ID clean + validate করবে।
+
+php
+Copy code
+        $id = trim($id);
+➡️ ID এর অপ্রয়োজনীয় white space কেটে ফেলবে।
+
+php
+Copy code
+        if (strlen($id) > 5) {
+            throw new Exception("❌ ID must be max 5 characters.");
+        }
+➡️ ID এর length ৫ এর বেশি হলে Exception throw করবে — মানে error।
+
+php
+Copy code
+        $this->id = $id;
+    }
+➡️ Valid হলে property তে সেট করবে।
+
+php
+Copy code
+    protected function setName($name) {
+        $this->name = htmlspecialchars(trim($name));
+    }
+➡️ Name trim করবে + htmlspecialchars() দিবে — XSS রোধ করতে।
+
+php
+Copy code
+    protected function setEmail($email) {
+        $email = trim($email);
+➡️ Email ও trim করবে।
+
+php
+Copy code
+        if (!preg_match("/^[\w\-\.]+@[\w\-]+\.[a-z]{2,}$/i", $email)) {
+            throw new Exception("❌ Invalid email format.");
+        }
+➡️ Regex দিয়ে email pattern match করবে। না মিললে Exception।
+
+php
+Copy code
+        $this->email = htmlspecialchars($email);
+    }
+}
+?>
+➡️ Valid হলে save করবে + class close।
+
+✅ 🔍 2️⃣ Student.php — Line by Line
+php
+Copy code
+<?php
+require_once 'User.php';
+➡️ User.php load করছে — Inheritance চালাতে হবে।
+
+php
+Copy code
+class Student extends User {
+➡️ Student হলো child class, User থেকে inherit করছে।
+
+php
+Copy code
+    private $photo;
+➡️ Student এর নতুন property — profile photo।
+
+php
+Copy code
+    public function __construct($id, $name, $email, $photo) {
+        parent::__construct($id, $name, $email);
+➡️ Constructor ৪টি input নেয় — parent এর ৩টা + photo।
+➡️ parent::__construct মানে User class এর constructor চালাবে।
+
+php
+Copy code
+        $this->setPhoto($photo);
+    }
+➡️ নিজের photo setter call করছে।
+
+php
+Copy code
+    private function setPhoto($photo) {
+➡️ Image upload validate/save এর logic।
+
+php
+Copy code
+        if ($photo['error'] === UPLOAD_ERR_OK) {
+➡️ যদি ফাইল OK থাকে।
+
+php
+Copy code
+            $tmp = $photo['tmp_name'];
+            $name = $photo['name'];
+            $size = $photo['size'];
+➡️ Temp location, filename, size বের করছে।
+
+php
+Copy code
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+➡️ File extension বের করছে।
+
+php
+Copy code
+            $allowed = ['jpg', 'jpeg', 'png', 'gif'];
+➡️ Allowed extensions list।
+
+php
+Copy code
+            if (!in_array($ext, $allowed)) {
+                throw new Exception("❌ Only JPG, PNG, GIF allowed.");
+            }
+➡️ যদি extension invalid → Exception।
+
+php
+Copy code
+            if ($size > 1024 * 1024) {
+                throw new Exception("❌ Image too large (max 1MB).");
+            }
+➡️ যদি file size 1MB এর বেশি হয় → Exception।
+
+php
+Copy code
+            $newName = uniqid('img_', true) . '.' . $ext;
+            $uploadPath = 'uploads/' . $newName;
+➡️ Unique filename বানায় → old name overwrite হবে না।
+
+php
+Copy code
+            if (!move_uploaded_file($tmp, $uploadPath)) {
+                throw new Exception("❌ Failed to upload photo.");
+            }
+➡️ Temporary file কে uploads/ এ move করবে। না পারলে Exception।
+
+php
+Copy code
+            $this->photo = $newName;
+➡️ Valid হলে filename save করবে।
+
+php
+Copy code
+        } else {
+            throw new Exception("❌ Photo required.");
+        }
+    }
+➡️ যদি কোনো file না থাকে → Exception।
+
+php
+Copy code
+    public function save($filename) {
+        $line = "{$this->id},{$this->name},{$this->email},{$this->photo}\n";
+        file_put_contents($filename, $line, FILE_APPEND);
+    }
+➡️ Save method — .txt তে id,name,email,photo newline এ write করবে।
+
+php
+Copy code
+    public static function display($filename) {
+➡️ Static display method — সব student দেখাবে।
+
+php
+Copy code
+        if (!file_exists($filename)) {
+            echo "<p>No students yet.</p>";
+            return;
+        }
+➡️ ফাইল না থাকলে message।
+
+php
+Copy code
+        $lines = file($filename, FILE_IGNORE_NEW_LINES);
+➡️ ফাইল কে line by line array তে আনবে।
+
+php
+Copy code
+        echo "<h3>📋 Registered Students:</h3>";
+        echo "<table border='1' cellpadding='8' cellspacing='0'>";
+        echo "<tr><th>ID</th><th>Name</th><th>Email</th><th>Photo</th></tr>";
+➡️ Table head তৈরি।
+
+php
+Copy code
+        foreach ($lines as $line) {
+            list($id, $name, $email, $photo) = explode(",", $line);
+➡️ প্রতিটি line কে split করবে।
+
+php
+Copy code
+            echo "<tr>
+                <td>" . htmlspecialchars($id) . "</td>
+                <td>" . htmlspecialchars($name) . "</td>
+                <td>" . htmlspecialchars($email) . "</td>
+                <td><img src='uploads/" . htmlspecialchars($photo) . "' width='80'></td>
+            </tr>";
+➡️ প্রতিটি student এর row show করবে, photo ও দেখাবে।
+
+php
+Copy code
+        }
+        echo "</table>";
+    }
+}
+?>
+➡️ Loop শেষ → table শেষ → class শেষ।
+
+✅ 🔍 3️⃣ index.php — Line by Line
+php
+Copy code
+<?php
+require_once 'classes/Student.php';
+➡️ Student class load করছে।
+
+php
+Copy code
+$message = '';
+➡️ Message var init.
+
+php
+Copy code
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+➡️ Form submit হলে।
+
+php
+Copy code
+    try {
+        $student = new Student(
+            $_POST['id'] ?? '',
+            $_POST['name'] ?? '',
+            $_POST['email'] ?? '',
+            $_FILES['photo'] ?? []
+        );
+➡️ New Student object বানাবে।
+
+php
+Copy code
+        $student->save('data.txt');
+        $message = "✅ Registered successfully!";
+    } catch (Exception $e) {
+        $message = $e->getMessage();
+    }
+}
+➡️ Save করবে। error হলে catch করে message।
+
+html
+Copy code
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Registration</title>
+➡️ HTML শুরু।
+
+html
+Copy code
+    <style> ... </style>
+➡️ Basic style।
+
+html
+Copy code
+<div class="box">
+    <h2>📄 Student Registration</h2>
+➡️ Title।
+
+php
+Copy code
+    <?php if ($message) echo "<div class='msg'>" . htmlspecialchars($message) . "</div>"; ?>
+➡️ Message show।
+
+html
+Copy code
+    <form method="POST" enctype="multipart/form-data">
+        <input type="text" name="id" placeholder="Student ID (max 5 chars)" required>
+        <input type="text" name="name" placeholder="Name" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="file" name="photo" required>
+        <button type="submit">Register</button>
+    </form>
+➡️ Form: id, name, email, photo।
+
+php
+Copy code
+    <?php Student::display('data.txt'); ?>
+</div>
+</body>
+</html>
+➡️ সব student দেখাবে।
+
+✅✅✅ 🔑 Bottomline
+ধাপ	ব্যাখ্যা
+User	Base class — id, name, email
+Student	User থেকে extend — file upload extra
+parent::__construct	parent init
+Exception	Validation fail করলে
+uniqid	Unique filename
+move_uploaded_file	Temp → uploads
+file_put_contents	Save
+display	table format show

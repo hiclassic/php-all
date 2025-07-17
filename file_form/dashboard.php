@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['myfile'])) {
         foreach ($lines as $line) {
             list($email, $file) = explode(",", $line);
             if ($email == $student['email']) {
-                echo "<li><a href='uploads/$file' target='_blank'>$file</a></li>";
+                // echo "<li><a href='uploads/$file' target='_blank'>$file</a></li>";
                 echo " <img src='uploads/$file' width='100px'>";
             }
         }

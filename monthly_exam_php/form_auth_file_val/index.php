@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 
     <div class="link">
-        Already have an account? <a href="login.php">Login here</a>
+       <p>Already have an account? <a href="login.php">Login</a></p>
     </div>
 </div>
 
